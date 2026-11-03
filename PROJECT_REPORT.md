@@ -143,12 +143,14 @@ Dockerfiles are provided for the backend and frontend. `docker-compose.yml` buil
 
 MealMate demonstrates the main workflow of an online food ordering platform through four role-based modules. It combines a responsive React interface with a REST API, JWT protection and a normalized relational database. The project also includes API documentation, Postman requests, automated tests and Docker configuration, providing a base that can be extended further.
 
-## 16. Verification Notes to Complete Before Submission
+## 16. Verification Notes
 
-After running the project on your own machine, add your own brief observations here:
+- **Environment used:** Windows, VS Code, Python virtual environment, React with Vite, FastAPI and SQLite.
 
-- Environment used:
-- Customer journey tested:
-- Owner and delivery flows tested:
-- Any bug found and fixed:
-- One improvement you would build next:
+- **Customer journey tested:** Logged in as a customer, browsed restaurants, added food items to the cart, placed an order, completed mock payment, checked order history and submitted a review.
+
+- **Owner and delivery flows tested:** Restaurant owner accepted the order and started preparation. Admin assigned a delivery partner. Delivery partner updated the delivery status to out for delivery and then delivered.
+
+- **Any bug found and fixed:** Fixed the React is not defined error in App.jsx by adding the React import.
+
+- **One improvement I would build next:** Integrate a real payment gateway, migrate the database to PostgreSQL and add real-time delivery tracking.

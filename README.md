@@ -183,3 +183,22 @@ Run the app locally and test each demo role. Replace this section with your own 
 - What I would improve next:
 
 Do not submit a deployment URL until the application is actually deployed and tested.
+
+## Personal Verification
+
+### What I tested
+- Customer ordering
+- Mock payment
+- Order tracking
+- Restaurant owner order management
+- Admin delivery assignment
+- Delivery partner status updates
+- Customer reviews
+
+### One issue I fixed
+Fixed the "React is not defined" error in App.jsx by adding the React import.
+
+### What I would improve next
+- Integrate a real payment gateway.
+- Migrate to PostgreSQL.
+- Add real-time delivery tracking.
