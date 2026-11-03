@@ -1,0 +1,68 @@
+{
+  "info": {
+    "_postman_id": "6b2aaf39-6fa2-42f0-9cb4-0fe2b40d1234",
+    "name": "MealMate Food Ordering API",
+    "description": "API collection for customer, restaurant owner, delivery partner and admin flows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" },
+    { "key": "restaurantId", "value": "1" },
+    { "key": "menuItemId", "value": "1" },
+    { "key": "orderId", "value": "1" },
+    { "key": "deliveryPartnerId", "value": "3" }
+  ],
+  "item": [
+    {
+      "name": "Public & Authentication",
+      "item": [
+        { "name": "Health", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+        { "name": "Browse restaurants", "request": { "method": "GET", "url": "{{baseUrl}}/restaurants?page=1&page_size=10" } },
+        { "name": "View restaurant menu", "request": { "method": "GET", "url": "{{baseUrl}}/restaurants/{{restaurantId}}/menu" } },
+        {
+          "name": "Login (save token)",
+          "event": [{ "listen": "test", "script": { "exec": ["const body = pm.response.json();", "if (body.access_token) pm.collectionVariables.set('token', body.access_token);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"demo12345\"\n}" }, "url": "{{baseUrl}}/auth/login" }
+        },
+        { "name": "Register customer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"New Customer\",\n  \"email\": \"newcustomer@example.com\",\n  \"password\": \"strongpass123\",\n  \"address\": \"Sector 45, Gurugram\"\n}" }, "url": "{{baseUrl}}/auth/register" } }
+      ]
+    },
+    {
+      "name": "Customer (login as customer first)",
+      "item": [
+        { "name": "My orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/orders" } },
+        { "name": "Place order", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"restaurant_id\": 1,\n  \"delivery_address\": \"Sector 45, Gurugram\",\n  \"items\": [{\"menu_item_id\": 1, \"quantity\": 2}]\n}" }, "url": "{{baseUrl}}/orders" } },
+        { "name": "Mock payment", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/orders/{{orderId}}/pay" } },
+        { "name": "Order tracking/detail", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/orders/{{orderId}}" } },
+        { "name": "Submit review", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Fresh food and good service.\"\n}" }, "url": "{{baseUrl}}/orders/{{orderId}}/reviews" } }
+      ]
+    },
+    {
+      "name": "Restaurant Owner (login as owner first)",
+      "item": [
+        { "name": "My restaurant", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/owner/restaurant" } },
+        { "name": "My menu", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/owner/menu" } },
+        { "name": "Add menu item", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Classic Veg Burger\",\n  \"description\": \"Vegetable patty with fresh lettuce.\",\n  \"category\": \"Main Course\",\n  \"price\": 140\n}" }, "url": "{{baseUrl}}/owner/menu" } },
+        { "name": "Incoming orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/owner/orders" } },
+        { "name": "Update order status", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"confirmed\"\n}" }, "url": "{{baseUrl}}/owner/orders/{{orderId}}/status" } }
+      ]
+    },
+    {
+      "name": "Delivery Partner (login as delivery first)",
+      "item": [
+        { "name": "Assigned orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/delivery/orders" } },
+        { "name": "Update delivery status", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"out_for_delivery\"\n}" }, "url": "{{baseUrl}}/delivery/orders/{{orderId}}/status" } }
+      ]
+    },
+    {
+      "name": "Admin (login as admin first)",
+      "item": [
+        { "name": "Dashboard metrics", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/admin/dashboard" } },
+        { "name": "All users", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/admin/users" } },
+        { "name": "All orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/admin/orders" } },
+        { "name": "Assign delivery partner", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"delivery_partner_id\": 3\n}" }, "url": "{{baseUrl}}/admin/orders/{{orderId}}/assign" } }
+      ]
+    }
+  ]
+}
